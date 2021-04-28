@@ -1,0 +1,146 @@
+<%include partials/studentHeader%>
+<style>
+iframe {
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+}
+.image-container {
+  text-align: center;
+}
+
+.image-head {
+  font-size: 40px;
+  font-weight: 400;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div style="display: none;" id="workflowData">
+    <%= JSON.stringify(workflow) %>
+</div>
+
+<span style="display: none;" id="hidden-pieValueCompleted">></span>
+<span style="display: none;" id="hidden-pieValueNotCompleted"></span>
+<div class="animated fadeIn">
+    <div class="row text-center">
+        <div class="col-lg-6">
+            <div class="image-container">
+                <div class="image-head">Application Form</div>
+                <img src="/generated_files/<%= workflow.generatedPath %>" alt="application-form" class="app-image">
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <div id="form-title">
+                    </div>
+                </div>
+                <div class="card-body card-block">
+                    <div>
+                      Please fill in the required details for the form
+                        <div id="fieldContainer">
+                        </div>
+                        </br>
+                        <div id="designatorContainer">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer" style="background-color: #00bcd4;">
+                    <button type="submit" class="btn btn-sm" style="color: white; font-size: 20px; " onclick="submitMe()">
+                     <b>Submit</b>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let data = document.getElementById("workflowData").innerHTML;
+        data = JSON.parse(data)
+        console.log(data)
+        let fieldSize = data.fields.length;
+        let fields = [];
+
+        for (let i = 0; i < fieldSize; i++) {
+            let childElem = "<label for='" + data.fields[i] + "' class='form-control-label'>" + "</label><input type='text' id='" + data.fields[i] + "' name='" + data.fields[i] + "' placeholder='" + data.fields[i] + "' class='form-control'>";
+            $(childElem).appendTo("#fieldContainer")
+        }
+
+        let designatorsSize = data.approvers.length
+        let idx = window.location.host.length + 15 + 2 + window.location.protocol.length
+        console.log("workflowId", window.location.href.slice(idx + 1, window.location.href.length))
+        let workflowId = window.location.href.slice(idx + 1, window.location.href.length);
+
+        for (let i = 0; i < designatorsSize; i++) {
+            let istr = i.toString();
+
+            let chooseDesignatorElem = "<div style='display: flex; justify-content: space-around'><label for='" + data.approvers[i].grp.name.replace(/\s+/, "") + "' class='form-control-label'>" + data.approvers[i].grp.name.replace(/\s+/, "") + "</label><select id='" + data.approvers[i].grp.name.replace(/\s+/, "") + "'>";
+
+            let members = data.approvers[i].grp.members.length;
+            for (let j = 0; j < members; j++) {
+                let person = "<option class='" + data.approvers[i].grp.members[j]._id + "'value='" + data.approvers[i].grp.members[j].name.replace(/\s+/, "") + "' id='" + data.approvers[i].grp.members[j].name.replace(/\s+/, "") + "'>" + data.approvers[i].grp.members[j].name.replace(/\s+/, "") + "</option>";
+                chooseDesignatorElem += person;
+            }
+
+            chooseDesignatorElem += "</select></div></br>";
+            $(chooseDesignatorElem).appendTo("#designatorContainer");
+        }
+
+        function submitMe() {
+            console.log("hi")
+            let approverIds = [];
+            let approvedNames = [];
+            let approvers;
+
+            for (let i = 0; i < designatorsSize; i++) {
+                let myselect = "#" + data.approvers[i].grp.name.replace(/\s+/, "") + " option:selected";
+                console.log("submitMe -> myselect", myselect)
+                console.log("submitMe -> $(myselect).text().replace(/\s+/, '')", $(myselect).text().replace(/\s+/, ""))
+                console.log("submitMe -> $(myselect).text()", $(myselect).text())
+                // approvedNames.push($(myselect).text().replace(/\s+/, ""))
+                approvedNames.push($(myselect).text())
+                approverIds.push(document.getElementById(approvedNames[i]).className);
+            }
+
+            for (let i = 0; i < designatorsSize; i++) {
+                if (i === 0) {
+                    approvers = [
+                        {
+                            approverId: approverIds[i],
+                            level: i
+                        }
+                    ]
+                }
+                else {
+                    approvers.push({
+                        approverId: approverIds[i],
+                        level: i
+                    })
+                }
+            }
+
+            for (let i = 0; i < fieldSize; i++) {
+                fields.push(document.getElementById(data.fields[i]).value)
+                console.log("TCL: submitMe -", data.fields[i])
+            }
+            console.log(workflowId)
+            console.log(approvers)
+            console.log(fields)
+
+            let url = (window.location.protocol + "//" + window.location.host + "/request/create");
+            $.post(url, {
+                workflowId: workflowId,
+                approvers: approvers,
+                fields: fields
+
+            }, function (data, status) {
+                console.log(data, status);
+                window.location.href = '/';
+            });
+        }
+
+    </script>
+    <%include partials/footer%>

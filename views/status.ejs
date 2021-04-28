@@ -1,0 +1,90 @@
+
+<%include partials/studentHeader%>
+    <link rel="stylesheet" href="/css/statuspage.css">
+
+    <div class="status-container">
+        <div style="text-align: center;">
+            <div style="font-size: 35px; font-weight: 600; margin-bottom: 70px; text-transform: uppercase;"><%= request.workflowId.name%> Form</div>
+        </div>
+        <div class="meta-container">
+            <div class="row text-center">
+                <div class="col-lg-1"></div>
+                    <div class="col-lg-5">
+                        <div class="detail">
+                            <span class="mfield">Applicant name: </span>
+                            <span><%= request.ownerId.name %></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="detail">
+                            <span class="mfield">Date: </span>
+                            <span>02/08/2020</span>
+                        </div>
+                    </div>
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+
+        <ul class="steps">
+            <% for(let i=0; i < request.approvers.length; i++) { %>
+                <% if(i < request.approvedBy.length){ %>
+                    <li class="step step--complete step--active">
+                        <span class="step__icon"></span>
+                        <span class="step__label"><%= request.approvers[i].approverId.name %></span>
+                    </li>
+                  <% } else if(i == request.approvedBy.length ) { %>
+                    <li class="step step--incomplete step--active">
+                        <span class="step__icon"></span>
+                        <span class="step__label"><%= request.approvers[i].approverId.name %></span>
+                    </li>
+                  <% } else {%>
+                    <li class="step step--incomplete step--inactive">
+                        <span class="step__icon"></span>
+                        <span class="step__label"><%= request.approvers[i].approverId.name %></span>
+                    </li>
+                 <% } %>
+
+             <% } %>
+        </ul>
+    </div>
+
+    <div class="image-container">
+        <!-- <div class="image-head">Application Form</div> -->
+        <img src="/generated_files/<%= genFilePath %>" alt="application-form" class="app-image">
+    </div>
+
+    <% if( !request.isVerified ){ %>
+        <div class="action-container">
+            <div class="row text-center">
+                <div class="col-lg-3"></div>
+                <% if( isAdmin ){ %>
+                    <div class="col-lg-3">
+                        <a href="/request/approve/<%= request._id %>"><button
+                                class="btn btn-lg remind btn-success">APPROVE AND SIGN</button>
+                        </a>
+                    </div>
+                    <div class="col-lg-3">
+                        <a href="/request/reject/<%= request._id %>">
+                            <button class="btn btn-lg remind btn-danger">REJECT</button>
+                        </a>
+                    </div>
+                <% } else {%>
+                    <div class="col-lg-3">
+                        <a href="/request/remind/<%= request._id %>"><button
+                                class="btn btn-lg remind btn-warning">REMIND</button>
+                        </a>
+                    </div>
+                    <div class="col-lg-3">
+                        <a href="/request/withdraw/<%= request._id %>">
+                            <button class="btn btn-lg remind " style="background-color:#0da2ff; color:white;">WITHDRAW</button>
+                        </a>
+                    </div>
+                <% } %>
+                <div class="col-lg-3"></div>
+            </div>
+        </div>
+    <% } %>
+
+<script src="/js/status.js"></script>
+</div>
+<%include partials/footer%>

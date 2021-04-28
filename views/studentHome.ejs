@@ -1,0 +1,422 @@
+<%include partials/studentHeader%>
+<!--<div> <%=JSON.stringify(data.activeRequests[0])%></div>-->
+
+<style>
+    .list-group-item {
+        border: none;
+    }
+    .form-head {
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-right: 5px;
+        font-size: 25px;
+        color: rgba(0,0,0,0.8);
+    }
+
+    .d-flex {
+        color: rgb(51,51,51);
+        font-size: 16px;
+    }
+</style>
+<div class="animated fadeIn">
+  <br/>
+  <h3 style="text-transform: uppercase; text-align:center;">APPLICANT DASHBOARD</h3>
+  <br/>
+    <div class = "row text-center">
+        <div class="container">
+                <div class="card-body">
+                  <div class="btn-group text-center">
+                    <a id="btnNewForm" href="/workflow/list" class="btn btn-info btn-lg putbelow" style="position:fixed;bottom:30px;right:30px; z-index:999;">
+          <i class="fa fa-plus-circle"></i> Apply for a form
+        </a>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="row">
+               <div class="col-sm-6 col-lg-3">
+                       <div class="card text-white bg-flat-color-1">
+                           <div class="card-body">
+                               <div class="card-left pt-1 float-left">
+                                   <h3 class="mb-0 fw-r" style="color: white;">
+                                       <span class="count"><%=data.completedRequests.length%></span>
+                                   </h3>
+                                   <p class="text-light mt-1 m-0">Completed</p>
+                               </div><!-- /.card-left -->
+
+                               <div class="card-right float-right text-right" style="color: white;">
+                                   <i class="icon fade-5 icon-lg ti-check-box"></i>
+                               </div><!-- /.card-right -->
+
+                           </div>
+
+                       </div>
+                   </div>
+                   <!--/.col-->
+
+                   <div class="col-sm-6 col-lg-3">
+                       <div class="card text-white " style="background-color:#FCCC00;">
+                           <div class="card-body">
+                             <div class="card-left pt-1 float-left">
+                                 <h3 class="mb-0 fw-r" style="color: white;">
+                                     <span class="count"><%=data.activeRequests.length%></span>
+                                 </h3>
+                                 <p class="text-light mt-1 m-0">Ongoing</p>
+                             </div><!-- /.card-left -->
+
+                             <div class="card-right float-right text-right" style="color: white;">
+                                 <i class="icon fade-5 icon-lg ti-bookmark-alt"></i>
+                             </div><!-- /.card-right -->
+                           </div>
+
+                       </div>
+                   </div>
+                   <!--/.col-->
+
+                   <div class="col-sm-6 col-lg-3">
+                       <div class="card text-white bg-flat-color-4">
+                           <div class="card-body">
+                               <div class="card-left pt-1 float-left">
+                                   <h3 class="mb-0 fw-r" style="color: white;">
+                                       <span class="count"><%=data.rejectedRequests.length%></span>
+                                   </h3>
+                                   <p class="text-light mt-1 m-0">Rejected</p>
+                               </div><!-- /.card-left -->
+
+                               <div class="card-right float-right text-right" style="color: white;">
+                                   <i class="icon fade-5 icon-lg ti-na"></i>
+                               </div><!-- /.card-right -->
+
+                           </div>
+
+                       </div>
+                   </div>
+                   <!--/.col-->
+
+                   <div class="col-sm-6 col-lg-3">
+                       <div class="card text-white bg-flat-color-3">
+                           <div class="card-body">
+                               <div class="card-left pt-1 float-left">
+                                   <h3 class="mb-0 fw-r" style="color: white;">
+                                       <span class="count"><%=data.completedRequests.length + data.activeRequests.length + data.rejectedRequests.length%></span>
+                                   </h3>
+                                   <p class="text-light mt-1 m-0">Total</p>
+                               </div><!-- /.card-left -->
+
+                               <div class="card-right float-right text-right" style="color: white;">
+                                   <i class="icon fade-5 icon-lg ti-list"></i>
+                               </div><!-- /.card-right -->
+
+                           </div>
+
+                       </div>
+                   </div>
+                 </div>
+               <!-- /Widgets -->
+<% if(data.activeRequests.length>0){ %>
+    <br/>
+    <h3 style="text-transform: uppercase;">Ongoing Requests</h3>
+    <br/>
+<div class="row text-center">
+        <div class="col-lg-12 col-md-12">
+            <div class="">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <%for(let i=0;i<data.activeRequests.length;i++){%>
+                        <div class="col-lg-4 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div style="padding: 10px; justify-content: space-between;">
+                                        <b class="top-pad">
+                                            <div class="form-head"><%=data.activeRequests[i].workflowId.name%></div>
+                                        </b>
+                                        <!--<div class="circle">712</div>-->
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <div class="d-flex">
+                                                <div style="padding-left: 10px;">
+                                                    <i class="fa fa-user"></i> <span style="margin-left: 3px;">Approvals: </span>
+                                                </div>
+                                                <div class="flex-grow-1 approver">
+                                                    <%for(let j=0;j<data.activeRequests[i].approvedBy.length;j++){%>
+                                                    <%if(data.activeRequests[i].approvedBy[j].approverId){%>
+                                                    <span class="badge badge-primary"
+                                                        style="background-color: #24bb2b; font-size: 16px;">
+                                                        <%=data.activeRequests[i].approvedBy[j].approverId.username%>
+                                                    </span>
+                                                    <%}%>
+                                                    <%}%>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <!-- </div> -->
+                                        <!-- <br /> -->
+                                        <li class="list-group-item">
+                                            <div class="d-flex">
+                                                <div style="padding-left: 10px;">
+                                                    <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Approved on: </span>
+                                                </div>
+                                                <div class="flex-grow-1 approver">
+                                                    <span class="pull-center r-activity" style="color:#3694F7">
+                                                        02/08/2020
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="d-flex">
+                                                <div style="padding-left: 10px;">
+                                                    <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Applied on: </span>
+                                                </div>
+                                                <div class="flex-grow-1 approver">
+                                                    <span class="pull-center r-activity" style="color:#3694F7">
+                                                        02/08/2020
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                </ul>
+                                </div>
+                                <div class="row text-center" style="margin-top: 10px; margin-bottom: 20px;">
+                                    <div class="col-lg-12"><a
+                                        href="/request/view?requestId=<%=data.activeRequests[i]._id%>"
+                                        class="btn btn-success" style="margin: 10px">View Status</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <%}%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<% if(data.completedRequests.length>0){ %>
+    <!-- Widgets  -->
+    <br/>
+    <h3 style="text-transform: uppercase;">Completed Requests</h3>
+    <br/>
+  <div class="row text-center">
+        <div class="col-lg-12 col-md-12">
+            <div class="">
+                  <div class="card-body">
+                    <div class="row text-center">
+                      <%for(let i=0;i<data.completedRequests.length;i++){%>
+                        <div class="col-lg-4 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div style="padding: 10px; justify-content: space-between;">
+                                        <b class="top-pad">
+                                            <div class="form-head"><%=data.completedRequests[i].workflowId.name%></div>
+                                        </b>
+                                        <!--<div class="circle">712</div>-->
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <ul class="list-group list-group-flush">
+                                                            <li class="list-group-item">
+                                                                <div class="d-flex">
+                                                                    <div style="padding-left: 10px;">
+                                                                        <i class="fa fa-user"></i> <span style="margin-left: 3px;">Approvals: </span>
+                                                                    </div>
+                                                                    <div class="flex-grow-1 approver">
+                                                                        <%for(let j=0;j<data.completedRequests[i].approvedBy.length;j++){%>
+                                                                        <%if(data.completedRequests[i].approvedBy[j].approverId){%>
+                                                                        <span class="badge badge-primary"
+                                                                            style="background-color: #24bb2b; font-size: 16px;">
+                                                                            <%=data.completedRequests[i].approvedBy[j].approverId.username%>
+                                                                        </span>
+                                                                        <%}%>
+                                                                        <%}%>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <!-- </div> -->
+                                                            <!-- <br /> -->
+                                                            <li class="list-group-item">
+                                                                <div class="d-flex">
+                                                                    <div style="padding-left: 10px;">
+                                                                        <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Approved on: </span>
+                                                                    </div>
+                                                                    <div class="flex-grow-1 approver">
+                                                                        <span class="pull-center r-activity" style="color:#3694F7">
+                                                                            02/08/2020
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <div class="d-flex">
+                                                                    <div style="padding-left: 10px;">
+                                                                        <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Applied on: </span>
+                                                                    </div>
+                                                                    <div class="flex-grow-1 approver">
+                                                                        <span class="pull-center r-activity" style="color:#3694F7">
+                                                                            02/08/2020
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                    </ul>
+                                                    <div class="row text-center" style="margin-top: 10px;">
+                                                        <div class="col-lg-12"><a
+                                                            href="/request/certificate/view?requestId=<%=data.completedRequests[i]._id%>"
+                                                            class="btn btn-info" style="margin: 10px">Download Application</a></div>
+                                                        </div>
+                                                    </div>
+                                                <!-- <div style="height: 30px"></div> -->
+                                            </div>
+                                        </div>
+                                        <%}%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<% if(data.rejectedRequests.length>0){ %>
+    <!-- Widgets  -->
+    <br/>
+    <h3 style="text-transform: uppercase;">Rejected Requests</h3>
+    <br/>
+<div class="row text-center">
+        <div class="col-lg-12 col-md-12">
+            <div class="">
+                  <div class="card-body">
+                    <div class="row text-center">
+                      <%for(let i=0;i<data.rejectedRequests.length;i++){%>
+                        <div class="col-lg-4 ">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div style="padding: 10px; justify-content: space-between;">
+                                        <b class="top-pad">
+                                            <div class="form-head"><%=data.rejectedRequests[i].workflowId.name%></div>
+                                        </b>
+                                        <!--<div class="circle">712</div>-->
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <ul class="list-group list-group-flush">
+                                                                            <li class="list-group-item">
+                                                                                <div class="d-flex">
+                                                                                    <div style="padding-left: 10px;">
+                                                                                        <i class="fa fa-user"></i> <span style="margin-left: 3px;">Approvals: </span>
+                                                                                    </div>
+                                                                                    <div class="flex-grow-1 approver">
+                                                                                        <%for(let j=0;j<data.rejectedRequests[i].approvedBy.length;j++){%>
+                                                                                        <%if(data.rejectedRequests[i].approvedBy[j].approverId){%>
+                                                                                        <span class="badge badge-primary"
+                                                                                            style="background-color: #24bb2b; font-size: 16px;">
+                                                                                            <%=data.rejectedRequests[i].approvedBy[j].approverId.username%>
+                                                                                        </span>
+                                                                                        <%}%>
+                                                                                        <%}%>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                            <!-- </div> -->
+                                                                            <!-- <br /> -->
+                                                                            <li class="list-group-item">
+                                                                                <div class="d-flex">
+                                                                                    <div style="padding-left: 10px;">
+                                                                                        <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Approved on: </span>
+                                                                                    </div>
+                                                                                    <div class="flex-grow-1 approver">
+                                                                                        <span class="pull-center r-activity" style="color:#3694F7">
+                                                                                            02/08/2020
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                            <li class="list-group-item">
+                                                                                <div class="d-flex">
+                                                                                    <div style="padding-left: 10px;">
+                                                                                        <i class="fa fa-calendar"></i> <span style="margin-left: 3px;">Applied on: </span>
+                                                                                    </div>
+                                                                                    <div class="flex-grow-1 approver">
+                                                                                        <span class="pull-center r-activity" style="color:#3694F7">
+                                                                                            02/08/2020
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                    </ul>
+
+                                                                    </div>
+                                                                    <div class="row text-center">
+                                                                        <div class="col-lg-3"></div>
+                                                                        <div class="col-lg-6"><button type="button"
+                                                                                class="btn btn-danger"
+                                                                                data-toggle="modal"
+                                                                                data-target="#myModal"
+                                                                                onclick="viewRejectionClickHandler()">View
+                                                                                Rejection</button></div>
+                                                                        <div class="col-lg-3"></div>
+                                                                    </div>
+                                                                    <div id="myModal" class="modal fade" role="dialog">
+                                                                        <div class="modal-dialog">
+                                                                            <!-- Modal content-->
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button type="button" class="close"
+                                                                                        data-dismiss="modal">&times;</button>
+                                                                                    <h4 class="modal-title">Reason for
+                                                                                        rejection</h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <p>Insufficient attendance</p>
+                                                                                    <br />
+                                                                                    <p>- HOD</p>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-default"
+                                                                                        data-dismiss="modal">Close</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="height: 30px"></div>
+                                                                </div>
+                                                            </div>
+                                                            <%}%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+                                                            <!-- /Widgets -->
+                                                            <!--  Traffic  -->
+
+                                                        </div>
+
+                                                        <script>
+                                                            function remindClickHandler() {
+                                                                console.log("remind Clicked!")
+                                                                // this formID should send a reminder to its next approver. Priority 1
+                                                            }
+                                                            function withdrawClickHandler() {
+                                                                console.log("withdraw Clicked!")
+                                                                // delete this formID from all tables. Priority 3
+                                                            }
+                                                            function downloadFormClickHandler() {
+                                                                console.log("download form clicked!")
+                                                                // download this formID with its blanks filled in. Priority 4
+                                                            }
+                                                            function viewRejectionClickHandler() {
+                                                                console.log("View Rejection CLicked!")
+                                                                // View rejection string of this formID and also get who wrote this rejection. Priority 2
+                                                            }
+                                                        </script>
+
+                                                        <%include partials/footer%>
